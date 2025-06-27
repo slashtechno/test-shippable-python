@@ -4,7 +4,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest, ubuntu-24.04-arm, windows-11-arm]
+        # os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
     env:
@@ -25,7 +26,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install -r requirements.txt
 
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
