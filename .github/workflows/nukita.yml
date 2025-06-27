@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     env:
-      PYTHON_FILE: "" # Replace this with the path to the Python file that is the entrypoint for your code  
+      PYTHON_FILE: "main.py" # Replace this with the path to the Python file that is the entrypoint for your code  
 
     steps:
       - name: Check-out repository
