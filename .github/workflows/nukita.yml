@@ -83,7 +83,7 @@ jobs:
           files: |
             ./artifacts/**/main.bin
             ./artifacts/**/main.exe
-            ./artifacts/**/main.app
+            ./artifacts/main.app
           generate_release_notes: true
           prerelease: false
           draft: false
