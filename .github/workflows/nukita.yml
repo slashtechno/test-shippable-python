@@ -3,15 +3,12 @@ on: [push, pull_request]
 jobs:
   build:
     strategy:
-      # matrix:
-      #   os: [macos-latest, ubuntu-latest, windows-latest, ubuntu-24.04-arm, windows-11-arm]
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        # os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
     env:
-      PYTHON_FILE: "main.py" # Replace this with the path to the Python file that is the entrypoint for your code  
+      PYTHON_FILE: "main.py"
 
     steps:
       - name: Check-out repository
@@ -20,8 +17,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13' # Version range or exact version of a Python version to use, using SemVer's version range syntax
-          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+          python-version: '3.13'
+          architecture: 'x64'
           cache: 'pip'
           cache-dependency-path: |
             **/requirements*.txt
@@ -35,17 +32,13 @@ jobs:
         with:
           nuitka-version: main
           script-name: ${{ env.PYTHON_FILE }}
-          python-flag: --onefile
+          onefile: true
 
-      - name: Upload Artifacts
+      - name: Upload Executable
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ runner.os }} Build
-          path: |
-            main.exe
-            main.bin
-            main.app
-            dist/*
+          name: ${{ runner.os }} Executable
+          path: dist/*
           include-hidden-files: true
 
   release:
@@ -57,6 +50,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./artifacts
+
       - name: Create/Update Rolling Release
         uses: softprops/action-gh-release@v2
         with:
