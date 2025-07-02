@@ -49,23 +49,31 @@ jobs:
             dist/main.app
           if-no-files-found: error
 
-  release:
-    if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-    needs: build
-    runs-on: ubuntu-latest
+release:
+  if: github.event_name == 'push' && github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
+  needs: build
+  runs-on: ubuntu-latest
 
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./artifacts
+  steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
 
-      - name: Create/Update Rolling Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: rolling
-          name: Rolling Release
-          files: ./artifacts/**/*
-          generate_release_notes: true
-          prerelease: false
-          draft: false
+    - name: List downloaded files
+      run: find ./artifacts
+
+    - name: Create/Update Rolling Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: rolling
+        name: Rolling Release
+        # Only upload the actual binary files, not everything in artifacts/
+        files: |
+          ./artifacts/**/main.bin
+          ./artifacts/**/main.exe
+          ./artifacts/**/main.app/**
+        generate_release_notes: true
+        prerelease: false
+        draft: false
+        create_tag: true
