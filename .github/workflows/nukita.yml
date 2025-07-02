@@ -36,16 +36,17 @@ jobs:
           nuitka-version: main
           script-name: ${{ env.PYTHON_FILE }}
           mode: standalone
+          onefile: true
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }} Build
           path: |
-            build/*.exe
-            build/*.bin
-            build/*.app/**/*
-            build/*.dist/**/*
+            main.exe
+            main.bin
+            main.app
+            dist/*
           include-hidden-files: true
 
   release:
@@ -57,10 +58,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./artifacts
-      - name: Create Release
+      - name: Create/Update Rolling Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
-          name: Release ${{ github.run_number }}
+          tag_name: rolling
+          name: Rolling Release
           files: ./artifacts/**/*
           generate_release_notes: true
+          prerelease: false
+          draft: false
